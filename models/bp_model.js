@@ -7,11 +7,11 @@ const bpSchema = new mongoose.Schema({
     required: true,
   },
   systolic: {
-    type: String,
+    type: Number,
     required: true,
   },
   diastolic: {
-    type: String,
+    type: Number,
     required: true,
   },
   date: {
