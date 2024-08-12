@@ -5,12 +5,14 @@ const jwt = require("jsonwebtoken");
 const handleUserSignUp = async (req, res) => {
   try {
     const { name, email, password, age, weight, height } = req.body;
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
 
     if ((!name, !email, !password, !age, !weight, !height)) {
       return res.json({ status: "failed", msg: "all fields are required" });
     }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
     const user = await User.create({
       name: name,
       email: email,
