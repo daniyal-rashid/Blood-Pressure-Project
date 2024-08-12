@@ -27,4 +27,18 @@ const handleInputBP = async (req, res) => {
   }
 };
 
-module.exports = { handleInputBP };
+const getAllBPdata = async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(" ")[1];
+    const verify = jwt.verify(token, process.env.JWT_SECRET);
+    const { _id } = verify;
+
+    const BPdata = await BPModel.find({ userId: _id });
+    res.json({ status: "success", data: BPdata });
+  } catch (error) {
+    res.json({ status: "failed", error: error.message });
+  }
+};
+
+module.exports = { handleInputBP, getAllBPdata };
