@@ -1,0 +1,18 @@
+const dotenv = require("dotenv");
+dotenv.config();
+const express = require("express");
+const app = express();
+const connectDB = require("./db/db_connection.js");
+const router = require("./routes/route.js");
+
+const PORT = process.env.PORT || 1500;
+
+app.use(express.json({}));
+
+connectDB();
+
+app.use("/", router);
+
+app.listen(PORT, () => {
+  console.log(`server is running at http://localhost:${PORT}`);
+});
