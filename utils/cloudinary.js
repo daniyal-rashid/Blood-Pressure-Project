@@ -16,7 +16,7 @@ const uploadOnCloudinary = async (localFilePath) => {
     });
     // file has been uploaded successfull
     //console.log("file is uploaded on cloudinary ", response.url);
-    // fs.unlinkSync(localFilePath);
+    fs.unlinkSync(localFilePath);
     return response;
   } catch (error) {
     fs.unlinkSync(localFilePath); // remove the locally saved temporary file as the upload operation got failed
@@ -25,9 +25,3 @@ const uploadOnCloudinary = async (localFilePath) => {
 };
 
 module.exports = uploadOnCloudinary;
-
-// cloudinary.config({
-//   cloud_name: "dvljt7fa1",
-//   api_key: "396798289336679",
-//   api_secret: "WKwcMFE8YxuZlj_ZMTq7KYDhtio",
-// });
