@@ -7,11 +7,9 @@ const medicalDocumentSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    documents: [
-      {
-        documentURL: String,
-      },
-    ],
+    document: {
+      type: String,
+    },
   },
   {
     timestamps: true,
@@ -22,4 +20,4 @@ const MedicalDocument = mongoose.model(
   "MedicalDocument",
   medicalDocumentSchema
 );
-module.exports = BPModel;
+module.exports = MedicalDocument;

@@ -1,6 +1,8 @@
 const User = require("../models/user_model.js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const MedicalDocument = require("../models/medical_documents_model.js");
+const uploadOnCloudinary = require("../utils/cloudinary.js");
 
 const handleUserSignUp = async (req, res) => {
   try {
@@ -62,7 +64,88 @@ const handleUserLogin = async (req, res) => {
   }
 };
 
+const uploadMedicalDocument = async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(" ")[1];
+    const verify = jwt.verify(token, process.env.JWT_SECRET);
+    const { _id } = verify;
+
+    const medicalDocumentLocalPath = req.files?.medicalDocument[0]?.path;
+    const medicalDocument = await uploadOnCloudinary(medicalDocumentLocalPath);
+
+    const document = await MedicalDocument.create({
+      userId: _id,
+      document: medicalDocument.url,
+    });
+
+    res.json({ data: document });
+  } catch (error) {
+    res.json({ status: "failed", msg: error.message });
+  }
+};
+
+const getAllDocuments = async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(" ")[1];
+    const verify = jwt.verify(token, process.env.JWT_SECRET);
+    const { _id } = verify;
+
+    const allDocuments = await MedicalDocument.find({ userId: _id });
+
+    res.json({ status: "success", data: allDocuments });
+  } catch (error) {
+    res.json({ status: "failed", msg: error.message });
+  }
+};
+
+const handleViewProfile = async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(" ")[1];
+    const verify = jwt.verify(token, process.env.JWT_SECRET);
+    const { _id } = verify;
+
+    const user = await User.findById({ _id: _id });
+    res.json({ data: user });
+  } catch (error) {
+    res.json({ status: "failed", msg: error.message });
+  }
+};
+
+const handleEditProfile = async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(" ")[1];
+    const verify = jwt.verify(token, process.env.JWT_SECRET);
+    const { _id } = verify;
+
+    const { name, age, height, weight } = req.body;
+    const profilePicLocalPath = req.files?.profilePic[0]?.path;
+    const profilePic = await uploadOnCloudinary(profilePicLocalPath);
+
+    const user = await User.findByIdAndUpdate(
+      { _id: _id },
+      {
+        name: name,
+        age: age,
+        height: height,
+        weight: weight,
+        profilePic: profilePic.url,
+      }
+    );
+
+    res.json({ data: user });
+  } catch (error) {
+    res.json({ status: "failed", msg: error.message });
+  }
+};
 module.exports = {
   handleUserSignUp,
   handleUserLogin,
+  uploadMedicalDocument,
+  getAllDocuments,
+  handleEditProfile,
+  handleViewProfile,
 };
