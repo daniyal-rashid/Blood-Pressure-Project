@@ -15,8 +15,8 @@ app.use(express.json({}));
 
 connectDB();
 
-app.use("/", router);
-app.use("/user", authenticationMiddleware, router);
+app.use("/api", router);
+app.use("/api/user", authenticationMiddleware, router);
 
 app.get("/", (req, res) => {
   res.send("home page");

@@ -7,11 +7,13 @@ const {
   handleEditProfile,
   handleViewProfile,
   getAllDocuments,
+  handleUserVerify,
 } = require("../controllers/user_controller");
 const { handleInputBP, getAllBPdata } = require("../controllers/bp_controller");
 const upload = require("../middleware/multer.js");
 
 router.route("/signup").post(handleUserSignUp);
+router.route("/verify").post(handleUserVerify);
 router.route("/login").post(handleUserLogin);
 
 // BP controller routes
