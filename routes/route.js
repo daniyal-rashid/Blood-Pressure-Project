@@ -9,7 +9,11 @@ const {
   getAllDocuments,
   handleUserVerify,
 } = require("../controllers/user_controller");
-const { handleInputBP, getAllBPdata } = require("../controllers/bp_controller");
+const {
+  handleInputBP,
+  getAllBPdata,
+  healthhistory,
+} = require("../controllers/bp_controller");
 const upload = require("../middleware/multer.js");
 
 router.route("/signup").post(handleUserSignUp);
@@ -19,6 +23,7 @@ router.route("/login").post(handleUserLogin);
 // BP controller routes
 router.route("/inputbp").post(handleInputBP);
 router.route("/bphistory").get(getAllBPdata);
+router.route("/healthhistory").get(healthhistory);
 
 // medical document upload route
 router

@@ -41,4 +41,25 @@ const getAllBPdata = async (req, res) => {
   }
 };
 
-module.exports = { handleInputBP, getAllBPdata };
+const healthhistory = async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(" ")[1];
+    const verify = jwt.verify(token, process.env.JWT_SECRET);
+    const { _id } = verify;
+
+    const healthHistory = await BPModel.find({ userId: _id });
+
+    const newArray = healthHistory.map((data) => {
+      const { systolic, diastolic } = data;
+      const container = [systolic, diastolic];
+      return container;
+    });
+
+    res.json({ status: "success", data: newArray });
+  } catch (error) {
+    res.json({ status: "failed", error: error.message });
+  }
+};
+
+module.exports = { handleInputBP, getAllBPdata, healthhistory };
