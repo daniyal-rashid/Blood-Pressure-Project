@@ -30,14 +30,6 @@ const userSchema = new mongoose.Schema(
     profilePic: {
       type: String,
     },
-    status: {
-      type: String,
-      enum: ["Verified", "Unverified"],
-      default: "Unverified",
-    },
-    otpCode: {
-      type: Number,
-    },
   },
   {
     timestamps: true,

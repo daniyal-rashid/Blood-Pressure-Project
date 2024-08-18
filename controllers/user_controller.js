@@ -3,9 +3,9 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const MedicalDocument = require("../models/medical_documents_model.js");
 const uploadOnCloudinary = require("../utils/cloudinary.js");
-const otpGenerator = require("otp-generator");
-const nodemailer = require("nodemailer");
-const { text } = require("express");
+// const otpGenerator = require("otp-generator");
+// const nodemailer = require("nodemailer");
+// const { text } = require("express");
 
 const handleUserSignUp = async (req, res) => {
   try {
@@ -18,12 +18,6 @@ const handleUserSignUp = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const OTP = await otpGenerator.generate(6, {
-      upperCaseAlphabets: false,
-      lowerCaseAlphabets: false,
-      specialChars: false,
-    });
-
     const user = await User.create({
       name: name,
       email: email,
@@ -31,68 +25,15 @@ const handleUserSignUp = async (req, res) => {
       age: age,
       weight: weight,
       height: height,
-      otpCode: OTP,
     });
 
-    if (user.status === "Unverified") {
-      const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: process.env.SMTP_PORT,
-        secure: false, // Use `true` for port 465, `false` for all other ports
-        auth: {
-          user: process.env.SMTP_MAIL,
-          pass: process.env.SMTP_PASSWORD,
-        },
-      });
+    const { _id } = user;
 
-      const sendEmail = async (email) => {
-        let mailOptions = {
-          from: process.env.SMTP_MAIL,
-          to: email,
-          subject: "VERIFY YOUR EMAIL",
-          text: `Your OTP code is ${OTP} `,
-        };
-
-        transporter.sendMail(mailOptions, function (error, info) {
-          if (error) {
-            console.log(error);
-          } else {
-            console.log("email has sent successfully");
-          }
-        });
-      };
-
-      sendEmail(email);
-
-      return res.json({
-        msg: "Please verify your email, The OTP has sent successfully to your email address",
-      });
-    }
-  } catch (error) {
-    res.json({ err: "error" });
-  }
-};
-
-const handleUserVerify = async (req, res) => {
-  try {
-    const { email, code } = req.body;
-    const user = await User.findOne({ email: email });
     if (user) {
-      const { otpCode, name, _id } = user;
-      if (parseInt(otpCode) === parseInt(code)) {
-        const verifyUser = await User.findOneAndUpdate(
-          { email: email },
-          { status: "Verified" }
-        );
-        const token = jwt.sign({ _id, name }, process.env.JWT_SECRET, {
-          expiresIn: "30d",
-        });
-        return res.json({ msg: "successfully verified", token: token });
-      } else {
-        return res.json({ error: "Invalid OTP" });
-      }
-    } else {
-      return res.json({ error: "User not found" });
+      const token = jwt.sign({ _id, name }, process.env.JWT_SECRET, {
+        expiresIn: "30d",
+      });
+      return res.json({ msg: "successfully sugn up", token: token });
     }
   } catch (error) {
     res.json({ err: error.message });
@@ -108,63 +49,22 @@ const handleUserLogin = async (req, res) => {
     const user = await User.findOne({
       email: email,
     });
-    const { _id, name, status, otpCode } = user;
-
+    const { _id, name } = user;
     if (user) {
-      if (status === "Verified") {
-        const validated = await bcrypt.compare(password, user.password);
-        if (validated) {
-          const token = jwt.sign({ _id, name }, process.env.JWT_SECRET, {
-            expiresIn: "30d",
-          });
-          return res.json({ msg: "Successfully logged In", token: token });
-        } else {
-          return res.json({ msg: "email or password is incorrect" });
-        }
+      const validated = await bcrypt.compare(password, user.password);
+      if (validated) {
+        const token = jwt.sign({ _id, name }, process.env.JWT_SECRET, {
+          expiresIn: "30d",
+        });
+        return res.json({ msg: "successfully login", token: token });
       } else {
-        const validated = await bcrypt.compare(password, user.password);
-        if (validated) {
-          const transporter = nodemailer.createTransport({
-            host: process.env.SMTP_HOST,
-            port: process.env.SMTP_PORT,
-            secure: false, // Use `true` for port 465, `false` for all other ports
-            auth: {
-              user: process.env.SMTP_MAIL,
-              pass: process.env.SMTP_PASSWORD,
-            },
-          });
-
-          const sendEmail = async (email) => {
-            let mailOptions = await {
-              from: process.env.SMTP_MAIL,
-              to: email,
-              subject: "VERIFY YOUR EMAIL",
-              text: `Your OTP code is ${otpCode} `,
-            };
-
-            transporter.sendMail(mailOptions, function (error, info) {
-              if (error) {
-                console.log(error);
-              } else {
-                console.log("email has sent successfully");
-              }
-            });
-          };
-
-          sendEmail(email);
-
-          return res.json({
-            msg: "Please verify your email, The OTP has sent successfully to your email address",
-          });
-        } else {
-          return res.json({ msg: "email or password is incorrect" });
-        }
+        return res.json({ msg: "email or password is incorrect" });
       }
     } else {
-      return res.json({ msg: "User not found" });
+      return res.json({ msg: "email or password is incorrect" });
     }
   } catch (error) {
-    res.json({ err: "error" });
+    return res.json({ err: error });
   }
 };
 
@@ -247,7 +147,6 @@ const handleEditProfile = async (req, res) => {
 };
 module.exports = {
   handleUserSignUp,
-  handleUserVerify,
   handleUserLogin,
   uploadMedicalDocument,
   getAllDocuments,

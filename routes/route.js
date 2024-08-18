@@ -17,7 +17,6 @@ const {
 const upload = require("../middleware/multer.js");
 
 router.route("/signup").post(handleUserSignUp);
-router.route("/verify").post(handleUserVerify);
 router.route("/login").post(handleUserLogin);
 
 // BP controller routes
