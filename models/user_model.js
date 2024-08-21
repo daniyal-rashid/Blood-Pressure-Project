@@ -30,6 +30,25 @@ const userSchema = new mongoose.Schema(
     profilePic: {
       type: String,
     },
+    haveDiabetes: {
+      type: String,
+      enum: ["Yes", "No", "Probably"],
+    },
+    havePreDiabetes: {
+      type: String,
+      enum: ["Yes", "No", "Probably"],
+    },
+    lifeStyle: {
+      type: String,
+    },
+    areYouActive: {
+      type: String,
+      enum: ["Yes", "No", "Probably"],
+    },
+    checkBPdialy: {
+      type: String,
+      enum: ["Yes", "No", "Probably"],
+    },
   },
   {
     timestamps: true,

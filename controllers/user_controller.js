@@ -9,9 +9,33 @@ const uploadOnCloudinary = require("../utils/cloudinary.js");
 
 const handleUserSignUp = async (req, res) => {
   try {
-    const { name, email, password, age, weight, height } = req.body;
+    const {
+      name,
+      email,
+      password,
+      age,
+      weight,
+      height,
+      haveDiabetes,
+      havePreDiabetes,
+      lifeStyle,
+      areYouActive,
+      checkBPdialy,
+    } = req.body;
 
-    if ((!name, !email, !password, !age, !weight, !height)) {
+    if (
+      (!name,
+      !email,
+      !password,
+      !age,
+      !weight,
+      !height,
+      !haveDiabetes,
+      !havePreDiabetes,
+      !lifeStyle,
+      !areYouActive,
+      !checkBPdialy)
+    ) {
       return res.json({ status: "failed", msg: "all fields are required" });
     }
 
@@ -25,6 +49,11 @@ const handleUserSignUp = async (req, res) => {
       age: age,
       weight: weight,
       height: height,
+      haveDiabetes: haveDiabetes,
+      havePreDiabetes: havePreDiabetes,
+      lifeStyle: lifeStyle,
+      areYouActive: areYouActive,
+      checkBPdialy: checkBPdialy,
     });
 
     const { _id } = user;
