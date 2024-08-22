@@ -44,20 +44,10 @@ const getAllAppointment = async (req, res) => {
 };
 const handleUpdateAppointment = async (req, res) => {
   try {
-    // const authHeader = req.headers.authorization;
-    // const token = authHeader.split(" ")[1];
-    // const verify = jwt.verify(token, process.env.JWT_SECRET);
-    // const { _id } = verify;
-
     const { id } = req.params;
 
     const { doctor, address, date, time } = req.body;
 
-    // const appointment = await AppointmentModel.findOneAndUpdate(
-    //   { userId: _id },
-    //   { doctor: doctor, address: address, date: date, time: time },
-    //   { new: true }
-    // );
     const appointment = await AppointmentModel.findOneAndUpdate(
       { _id: id },
       { doctor: doctor, address: address, date: date, time: time },
