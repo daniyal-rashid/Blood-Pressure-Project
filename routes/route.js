@@ -15,6 +15,12 @@ const {
   healthhistory,
 } = require("../controllers/bp_controller");
 const upload = require("../middleware/multer.js");
+const {
+  handleCreateAppointment,
+  getAllAppointment,
+  handleUpdateAppointment,
+  handleDeleteAppointment,
+} = require("../controllers/appointment-controller.js");
 
 router.route("/signup").post(handleUserSignUp);
 router.route("/login").post(handleUserLogin);
@@ -32,7 +38,7 @@ router
     uploadMedicalDocument
   );
 
-// get all documents
+// get all documentsbphistory
 router.route("/getdocuments").get(getAllDocuments);
 
 // View profile route
@@ -45,5 +51,11 @@ router
     upload.fields([{ name: "profilePic", maxCount: 1 }]),
     handleEditProfile
   );
+
+// appointment routes
+router.route("/appointment").post(handleCreateAppointment);
+router.route("/appointment").get(getAllAppointment);
+router.route("/appointment/:id").patch(handleUpdateAppointment);
+router.route("/appointment/:id").delete(handleDeleteAppointment);
 
 module.exports = router;
