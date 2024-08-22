@@ -174,6 +174,22 @@ const handleEditProfile = async (req, res) => {
     res.json({ status: "failed", msg: error.message });
   }
 };
+
+const handleDeleteDocument = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleteDocument = await MedicalDocument.findByIdAndDelete(id);
+
+    if (!deleteDocument) {
+      return res.json({ message: "document not found" });
+    }
+
+    res.json({ msg: "suucessfully deleted" });
+  } catch (error) {
+    res.json({ status: "failed", msg: error.message });
+  }
+};
+
 module.exports = {
   handleUserSignUp,
   handleUserLogin,
@@ -181,4 +197,5 @@ module.exports = {
   getAllDocuments,
   handleEditProfile,
   handleViewProfile,
+  handleDeleteDocument,
 };

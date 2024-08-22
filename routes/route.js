@@ -8,6 +8,7 @@ const {
   handleViewProfile,
   getAllDocuments,
   handleUserVerify,
+  handleDeleteDocument,
 } = require("../controllers/user_controller");
 const {
   handleInputBP,
@@ -57,5 +58,8 @@ router.route("/appointment").post(handleCreateAppointment);
 router.route("/appointment").get(getAllAppointment);
 router.route("/appointment/:id").patch(handleUpdateAppointment);
 router.route("/appointment/:id").delete(handleDeleteAppointment);
+
+// medical document delete route
+router.route("/document/:id").delete(handleDeleteDocument);
 
 module.exports = router;
